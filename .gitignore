@@ -1,0 +1,14 @@
+# Ignorar archivo de credenciales de Google Cloud
+voz.json
+
+# Ignorar archivos de variables de entorno
+.env
+
+# Ignorar la carpeta de módulos de Node.js
+node_modules/
+
+# Ignorar archivos de log
+*.log
+
+# Ignorar la carpeta de dist (si usas Angular)
+dist/
