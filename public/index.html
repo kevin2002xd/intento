@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KidsGPT App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Barra de opciones -->
+        <div class="options-bar">
+            <h2 style="margin-bottom: 30px;">Menú</h2>
+            <a href="#">Chats</a>
+            <a href="#">Editar Perfil</a>
+            <a href="#">Cerrar Sesión</a>
+        </div>
+
+        <!-- Contenedor principal -->
+        <div class="chat-container">
+            <div class="chat-header">
+                <div class="chat-logo">
+                    <img src="assets/avatar3.png" alt="KidsGPT Logo">
+                </div>
+                <div class="chat-title">KidsGPT App</div>
+            </div>
+            <div class="chat-welcome-message">¡Bienvenido a la aplicación KidsGPT! ¡Vamos a divertirnos!</div>
+            <div class="w-full mb-3">
+                <input class="chat-input" id="name" name="name" type="text" placeholder="Escribe algo divertido!" #prompt>
+            </div>
+            <div class="w-full mb-3">
+                <div class="flex md:items-center mb-5">
+                    <div class="w-auto">
+                        <button class="chat-button" type="submit" onclick="sendText()">
+                            Preguntar
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <img src="assets/loader.gif" alt="" id="loader" style="display:none;">
+                <span class="chat-response" id="responseText"></span>
+                <audio id="audio" controls style="display:none;"></audio>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function sendText() {
+            const prompt = document.querySelector('#name').value;
+            const responseText = document.querySelector('#responseText');
+            const loader = document.querySelector('#loader');
+            const audio = document.querySelector('#audio');
+
+            responseText.textContent = '';
+            audio.style.display = 'none';
+            loader.style.display = 'block';
+
+            try {
+                const response = await fetch('/synthesize', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        text: prompt
+                    })
+                });
+
+                if (response.ok) {
+                    const audioSrc = await response.text();
+                    loader.style.display = 'none';
+                    audio.src = audioSrc;
+                    audio.style.display = 'block';
+                    audio.play();
+                    responseText.textContent = prompt;
+                } else {
+                    loader.style.display = 'none';
+                    responseText.textContent = 'Error al sintetizar el discurso';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                loader.style.display = 'none';
+                responseText.textContent = 'Error al enviar el texto';
+            }
+        }
+    </script>
+
+</body>
+
+</html>
